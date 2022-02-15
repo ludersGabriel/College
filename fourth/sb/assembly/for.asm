@@ -5,7 +5,13 @@
 .globl _start
 _start:
   movq $0, I
-  movq $0, A
+  movq $10, A
   movq I, %rax
-  for:
+  movq A, %rdi
+  for: 
+    cmpq %rax, %rdi
+    jge end_for
+    addi $1, %rdi
+    jmp for
+  end_for:
     

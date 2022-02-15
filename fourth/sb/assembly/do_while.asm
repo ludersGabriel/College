@@ -14,8 +14,7 @@ _start:
     addq $1, %rax
     movq %rax, I
     cmpq $10, %rax
-    jge end_while
-    jmp do_while
+    jl do_while
   end_while:
     movq $60, %rax
     syscall
