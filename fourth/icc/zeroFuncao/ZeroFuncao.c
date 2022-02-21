@@ -8,7 +8,7 @@ double bisseccao (Polinomio p, double a, double b, double eps,
 	       int *it, double *raiz)
 {
 	
-	double currentXm, oldXm, erro;
+	double currentXm, oldXm, erro = 0;
 	double pxA, pxM;
 	*it = 1;
 
@@ -20,7 +20,10 @@ double bisseccao (Polinomio p, double a, double b, double eps,
 		b = currentXm;
 	else if(pxM * pxA > 0)
 		a = currentXm;
-	else return currentXm;
+	else {
+			*raiz = currentXm;
+			return erro;
+		}
 
 	do{
 		oldXm = currentXm;
@@ -32,7 +35,11 @@ double bisseccao (Polinomio p, double a, double b, double eps,
 			b = currentXm;
 		else if(pxM * pxA > 0)
 			a = currentXm;
-		else return currentXm;
+		else {
+			erro = 0;
+			*raiz = currentXm;
+			return erro;
+		}
 
 		erro = fabs((currentXm - oldXm) / currentXm) * 100;
 		*it += 1;

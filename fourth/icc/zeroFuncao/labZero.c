@@ -23,7 +23,7 @@ int main ()
   
   // ask about small interval for x + 2
   tempo = timestamp();
-  erro = bisseccao(p, -3, 2, EPS, &it, &root);
+  erro = bisseccao(p, -7, 9, EPS, &it, &root);
   tempo = timestamp() - tempo;
   printf("(method, maxIt, root, erro, tempo) = (bissecao, %03d, %.15f, %.15f, %.15f)\n", it, root, erro, tempo);
 
