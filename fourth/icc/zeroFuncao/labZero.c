@@ -9,7 +9,9 @@ int main ()
   // 2x⁴ + 4x³ + 3x² − 10x − 15 = 0
   Polinomio p;
   p.grau = 4;
-  p.p = malloc(sizeof(double) * p.grau);
+  p.p = malloc(sizeof(double) * (p.grau + 1));
+  // p.p[0] = 2;
+  // p.p[1] = 1;
   p.p[0] = -15;
   p.p[1] = -10;
   p.p[2] = 3;
@@ -20,7 +22,7 @@ int main ()
   double root, erro, tempo;
   
   tempo = timestamp();
-  erro = bisseccao(p, 0, 3, EPS, &it, &root);
+  erro = bisseccao(p, -5, 3, EPS, &it, &root);
   tempo = timestamp() - tempo;
   printf("(method, maxIt, root, erro, tempo) = (bissecao, %03d, %.15f, %.15f, %.15f)\n", it, root, erro, tempo);
 
