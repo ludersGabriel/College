@@ -31,17 +31,17 @@ double bisseccao (Polinomio p, double a, double b, double eps,
 		calcPolinomio_rapido(p, a, &pxA, NULL);
 		calcPolinomio_rapido(p, currentXm, &pxM, NULL);
 
+		erro = fabs((currentXm - oldXm) / currentXm) * 100;
+
 		if(pxM * pxA < 0)
 			b = currentXm;
 		else if(pxM * pxA > 0)
 			a = currentXm;
 		else {
-			erro = 0;
 			*raiz = currentXm;
 			return erro;
 		}
 
-		erro = fabs((currentXm - oldXm) / currentXm) * 100;
 		*it += 1;
 	}while(erro > eps && *it < MAXIT);
 
