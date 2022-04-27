@@ -1,10 +1,14 @@
-public class Person {
+public class Person implements stringOut {
   private String email;
   private String name;
 
   public Person(String email, String name) {
     setEmail(email);
     setName(name);
+  }
+
+  public String stringFormat() {
+    return "";
   }
 
   public void setEmail(String email) {

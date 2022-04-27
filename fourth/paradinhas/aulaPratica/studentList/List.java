@@ -1,4 +1,4 @@
-public class List<T> {
+public class List<T extends stringOut> {
   private Node<T> root;
   private int size = 0;
 
@@ -32,8 +32,17 @@ public class List<T> {
     this.size = size;
   }
 
+  public void printList() {
+    Node<T> aux = this.getRoot();
+    while (aux != null) {
+      String out = aux.getValue().stringFormat();
+      System.out.printf("%s\n", out);
+      aux = aux.getProx();
+    }
+  }
+
   public void insert(T value) {
-    if (this.root != null) {
+    if (this.root == null) {
       this.setRoot(new Node<T>(value));
       return;
     }

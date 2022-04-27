@@ -1,0 +1,3 @@
+interface stringOut {
+  String stringFormat();
+}
