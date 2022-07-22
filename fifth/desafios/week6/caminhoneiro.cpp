@@ -8,9 +8,10 @@ const int inf = 1987654321;
 void floydWarshall(int u, int v, vector<vector<edge>>& g, vector<vector<ll>>& d, vector<vector<ll>>& next, int n){
   for(int u = 0; u < n; u++){
     for(auto [v, w] : g[u]){
-      // weight is 1
-      d[u][v] = w;
-      next[u][v] = v;
+      if(w < d[u][v]){
+        d[u][v] = w;
+        next[u][v] = v;
+      }
     }
   }
 
@@ -52,6 +53,7 @@ int main() {
   vector<vector<ll>> d (n, vector<ll>(n, oo));
   vector<vector<ll>> next(n, vector<ll>(n, oo));
   vector<vector<edge>> g(n);
+  
   for(; m--;){
     int u, v, p;
     cin >> u >> v >> p;
@@ -60,11 +62,16 @@ int main() {
   }
   
   floydWarshall(0, 1, g, d, next, n);
-  ll minDistance = -oo;
-  for(int i = 0; i < n; i++)
+  vector<ll> maxs;
+  for(int i = 0; i < n; i++){
+    ll maxDistance = -oo;
     for(int j = 0; j < n; j++){
-      if(minDistance < d[i][j]) minDistance = d[i][j];
+      if(i != j && maxDistance < d[i][j]) maxDistance = d[i][j];
     }
+    maxs.push_back(maxDistance);
+  }
+    
+  ll minDistance = *min_element(maxs.begin(), maxs.end());
 
   cout << minDistance;
 
