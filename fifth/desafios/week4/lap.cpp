@@ -2,24 +2,34 @@
 using namespace std;
 using ll = long long;
 
-ll f(int p, int k, int c, vector<int>& v){
-  if(p >= v.size()) {
-    return 0;
-  }
-  if(k <= 0){
-    return 0;
-  }
+#define BIGINT -1e9
 
-  ll sum, sum2; sum = sum2 = 0;
+int f(int p, int k, int c, vector<int>& v, vector<vector<int>>& m){
+  if(m[p][k] != BIGINT){
+    return m[p][k];
+  }
   
-  sum  += f(p + c, k - 1, c, v);
+  int sum, sum2; 
+  sum = (int) BIGINT;
+  sum2 = (int) BIGINT;
+
+  if(p + c < v.size() && k - 1 >= 0){
+    sum = f(p + c, k - 1, c, v, m);
+  }
 
   if(k * c <= (v.size() - (p + 1))){
     sum2 = v[p];
-    sum2 += f(p + 1, k, c, v);
+    if((p + 1) < v.size())
+      sum2 += f(p + 1, k, c, v, m);
   }
 
-  return sum > sum2 ? sum : sum2;
+  if(sum == (int) BIGINT && sum2 == (int) BIGINT) {
+    m[p][k] = 0;
+    return 0;
+  }
+
+  m[p][k] = sum > sum2 ? sum : sum2;
+  return m[p][k];
 }
 
 int main() {
@@ -29,11 +39,12 @@ int main() {
   int n, k, c;
   cin >> n >> k >> c;
   vector<int> v (n);
+  vector<vector<int>> m (n, vector<int> (k + 1, BIGINT));
   for(auto& el : v){
     cin >> el;
   }
 
-  ll soma = f(0, k, c, v);
+  int soma = f(0, k, c, v, m);
 
   cout << soma;
 
