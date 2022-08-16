@@ -8,6 +8,24 @@ ll gcd /* O(lg min(a, b)) */ (ll a, ll b) {
   return gcd(b, a%b);
 }
 
+void factorize /* O(sqrt(n)) */ (ll n) {
+  map<ll, ll, greater<int>> factors;
+
+  for (ll i = 2; i*i <= n; i++)
+  while (n % i == 0) { 
+    n /= i; 
+    factors[i]++; 
+  }
+  if (n > 1) { 
+    factors[n]++;
+  }
+
+  for(auto [key, value] : factors){
+    cout << key << ' ' << value << '\n';
+  }
+
+}
+
 int main() {
   cin.tie(0);
   ios_base::sync_with_stdio(0);
@@ -16,7 +34,7 @@ int main() {
   cin >> t;
   for(; t--;){
     ll n, num;
-    num = 0;
+    num = 1;
     cin >> n;
     for(; n--;){
       ll p, e;
@@ -25,12 +43,10 @@ int main() {
       ll mult = 1;
       for(int i = 0; i < e; i++) mult *= p;
 
-      num += mult;
+      num *= mult;
     }
 
-    cout << num << '\n';
+    factorize(num - 1);
   }
-  
-
 
 }
