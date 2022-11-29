@@ -8,8 +8,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include "compilador.h"
+#include "stack.h"
 
-int num_vars;
+int qtdVar, desloc;
+stack* tabelaSimbolos;
+int nivelLexico = -1;
 
 %}
 
@@ -31,12 +34,27 @@ programa    :{
 ;
 
 bloco       :
-              parte_declara_vars
-              {
-              }
+               {
+                  desloc = 0;
+                  nivelLexico += 1;
+               }
 
-              comando_composto
-              ;
+               parte_declara_vars
+
+               comando_composto
+               {
+                     int d = cleanLexicalLevel(tabelaSimbolos, nivelLexico);
+
+                     if(d > 0){
+                        char aux[20];
+                        sprintf(aux, "DMEM %d", d);
+                        geraCodigo(NULL, aux);  
+                     }
+                     
+                     nivelLexico -= 1;
+                     printElements(tabelaSimbolos);
+               }
+               ;
 
 
 
@@ -53,10 +71,18 @@ declara_vars: declara_vars declara_var
             | declara_var
 ;
 
-declara_var : { }
+declara_var : { qtdVar = 0; }
               lista_id_var DOIS_PONTOS
               tipo
               { /* AMEM */
+               char aux[20];
+               sprintf(aux, "AMEM %d", qtdVar);
+               geraCodigo (NULL, aux);
+
+               // update tipo
+               updateTypes(tabelaSimbolos, token);
+
+               printElements(tabelaSimbolos);
               }
               PONTO_E_VIRGULA
 ;
@@ -65,8 +91,30 @@ tipo        : IDENT
 ;
 
 lista_id_var: lista_id_var VIRGULA IDENT
-              { /* insere ultima vars na tabela de simbolos */ }
-            | IDENT { /* insere vars na tabela de simbolos */}
+              { 
+                  elTabelaSimbolos* el = elTabelaSimbolosConstructor(
+                     token,
+                     nivelLexico,
+                     desloc,
+                     UNDEFINED,
+                     VS
+                  );
+                  push(tabelaSimbolos, (void*) el);
+                  desloc++;
+                  qtdVar++;
+              }
+            | IDENT { 
+               elTabelaSimbolos* el = elTabelaSimbolosConstructor(
+                     token,
+                     nivelLexico,
+                     desloc,
+                     UNDEFINED,
+                     VS
+                  );
+                  push(tabelaSimbolos, (void*) el);
+                  desloc++;
+                  qtdVar++;
+            }
 ;
 
 lista_idents: lista_idents VIRGULA IDENT
@@ -99,8 +147,14 @@ int main (int argc, char** argv) {
 
 
 /* -------------------------------------------------------------------
- *  Inicia a Tabela de S�mbolos
+ *  Inicia a Tabela de Símbolos
  * ------------------------------------------------------------------- */
+   tabelaSimbolos = stackConstructor(
+      sizeof(elTabelaSimbolos),
+      100,
+      (void (*)(void*)) elTabelaSimbolosDestructor,
+      (void (*)(void*)) printElTabelaSimbolos
+   );
 
    yyin=fp;
    yyparse();

@@ -2,23 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-elTabelaSimbolos* elTabelaSimbolosConstructor(char* token, int nivelLexico, int offset, int type) {
-  elTabelaSimbolos* novo = malloc(sizeof(elTabelaSimbolos));
-  novo->token = token;
-  novo->nivelLexico = nivelLexico;
-  novo->offset = offset;
-  novo->type = type;
-  return novo;
-}
-
-void elTabelaSimbolosDestructor(elTabelaSimbolos* el) {
-  free(el);
-}
-
 stack* stackConstructor(
   int memSize, 
   int arrSize,
-  void (*destroyEl) (void*)
+  void (*destroyEl) (void*),
+  void (*printEl) (void*)
 ){
   if(arrSize < 1) arrSize = 1;
   
@@ -26,9 +14,22 @@ stack* stackConstructor(
   novo->memSize = memSize;
   novo->arrSize = arrSize;
   novo->destroyEl = destroyEl;
+  novo->printEl = printEl;
   novo->elements = 0;
   novo->dataArr = malloc(sizeof(memSize) * arrSize);
   return novo;
+}
+
+void printElements(stack* pilha){
+  if(pilha->elements <= 0){
+    printf("Pilha vazia!\n");
+    return;
+  }
+  
+  int i;
+  for(i = 0; i < pilha->elements; i++){
+    pilha->printEl(pilha->dataArr[i]);
+  }
 }
 
 void stackDestructor(stack* pilha){

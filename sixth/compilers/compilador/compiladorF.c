@@ -49,3 +49,61 @@ int imprimeErro ( char* erro ) {
 /* -------------------------------------------------------------------
  *  Adições à biblioteca
  * ------------------------------------------------------------------- */
+
+elTabelaSimbolos* elTabelaSimbolosConstructor(char* token, int nivelLexico, int offset, int type, int class) {
+  elTabelaSimbolos* novo = malloc(sizeof(elTabelaSimbolos));
+  novo->token = token;
+  novo->nivelLexico = nivelLexico;
+  novo->offset = offset;
+  novo->type = type;
+  novo->class = class;
+  return novo;
+}
+
+void elTabelaSimbolosDestructor(elTabelaSimbolos* el) {
+  free(el);
+}
+
+int convertType(char* type) {
+  if (strcmp(type, "integer") == 0) {
+    return INTEGER;
+  } else if (strcmp(type, "boolean") == 0) {
+    return BOOLEAN;
+  } else {
+    fprintf(stderr, "Tipo não reconhecido: %s\n", type);
+    exit(0);
+  }
+}
+
+void updateTypes(stack* s, char* type){
+  elTabelaSimbolos** arr = (elTabelaSimbolos**) s->dataArr;
+
+  int convertedType = convertType(type);
+
+  for(int i = s->elements - 1; i >= 0 && arr[i]->type == UNDEFINED; i--){
+    arr[i]->type = convertedType;
+  }
+}
+
+int cleanLexicalLevel(stack* s, int level){
+  elTabelaSimbolos** arr = (elTabelaSimbolos**) s->dataArr;
+  int ret = 0;
+
+  for(int i = s->elements - 1; i >= 0 && arr[i]->nivelLexico == level; i--){
+    s->elements--;
+    ret++;
+  }
+
+  return ret;
+}
+
+void printElTabelaSimbolos(elTabelaSimbolos* el) {
+  printf(
+    "Token: %s, Nivel Lexico: %d, Offset: %d, Type: %d, Class: %d\n",
+    el->token, 
+    el->nivelLexico, 
+    el->offset, 
+    el->type, 
+    el->class
+  );
+}

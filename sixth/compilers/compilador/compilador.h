@@ -23,7 +23,7 @@ typedef enum simbolos {
   simb_while, simb_do, simb_or, simb_div, simb_and
 } simbolos;
 
-
+#include "stack.h"
 
 /* -------------------------------------------------------------------
  * variáveis globais
@@ -31,10 +31,10 @@ typedef enum simbolos {
 
 extern simbolos simbolo, relacao;
 extern char token[TAM_TOKEN];
-extern int nivel_lexico;
+extern int nivelLexico;
 extern int desloc;
 extern int nl;
-
+extern int qtdVar;
 
 /* -------------------------------------------------------------------
  * prototipos globais
@@ -47,3 +47,30 @@ void yyerror(const char *s);
 /* -------------------------------------------------------------------
  *  Adições à biblioteca
  * ------------------------------------------------------------------- */
+
+typedef struct ELEMENTO_TABELA_SIMBOLOS {
+  char* token;
+  struct {
+    int nivelLexico;
+    int offset;
+  };
+  enum {
+    UNDEFINED,
+    INTEGER,
+    BOOLEAN
+  } type;
+
+  enum {
+    c_UNDEFINED,
+    VS,
+    PF
+  }class;
+} elTabelaSimbolos;
+
+elTabelaSimbolos* elTabelaSimbolosConstructor(char* token, int nivelLexico, int offset, int type, int class);
+void elTabelaSimbolosDestructor(elTabelaSimbolos* el);
+void updateTypes(stack* s, char* type);
+void printElTabelaSimbolos(elTabelaSimbolos* el);
+int cleanLexicalLevel(stack* s, int level);
+
+extern stack* tabelaSimbolos;
